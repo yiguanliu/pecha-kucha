@@ -2,6 +2,9 @@
 
 A modern web application for creating, editing, and presenting Pecha Kucha-style presentations. Built with React, TypeScript, and Vite.
 
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/d4042153-24cb-4beb-a527-baf462f33930" />
+
+
 ## Features
 
 - Slide editor with canvas and properties panel
