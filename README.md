@@ -55,8 +55,18 @@ Create a `.env.local` file for local development. Example:
 
 ```
 VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_KEY=your_supabase_key
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
+
+## Vercel Build Error
+
+If you see an error like:
+
+```
+Property 'env' does not exist on type 'ImportMeta'.
+```
+
+Make sure you are using `VITE_SUPABASE_ANON_KEY` (not `VITE_SUPABASE_KEY`) in your `.env.local` and in your code. The correct variable is `import.meta.env.VITE_SUPABASE_ANON_KEY`.
 
 ## License
 
