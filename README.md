@@ -1,8 +1,7 @@
 # Pecha Kucha Presentation App
-
 A modern web application for creating, editing, and presenting Pecha Kucha-style presentations. Built with React, TypeScript, and Vite.
 
-<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/d4042153-24cb-4beb-a527-baf462f33930" />
+<img width="1024" height="572" alt="image" src="https://github.com/user-attachments/assets/581419ce-6532-4afa-a683-b8b4e0f01290" />
 
 
 ## Features
