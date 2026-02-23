@@ -142,6 +142,14 @@ export default function EditorPage() {
             editor.setActiveSlideIndex(i);
             setSelectedElementId(null);
           }}
+          onDeleteSlide={(slideId) => {
+            editor.deleteSlide(slideId);
+            setSelectedElementId(null);
+          }}
+          onAddSlide={(afterIndex) => {
+            editor.addSlide(afterIndex);
+            setSelectedElementId(null);
+          }}
         />
 
         {/* Center: canvas */}

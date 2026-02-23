@@ -99,6 +99,30 @@ export function usePresentation(initial?: Presentation) {
     setIsDirty(true);
   }, []);
 
+  const addSlide = useCallback((afterIndex: number) => {
+    setPresentation((prev) => {
+      const newSlide = createDefaultSlide(prev.slides.length);
+      const slides = [...prev.slides];
+      slides.splice(afterIndex + 1, 0, newSlide);
+      return { ...prev, slides, updatedAt: new Date().toISOString() };
+    });
+    setActiveSlideIndex(afterIndex + 1);
+    setIsDirty(true);
+  }, []);
+
+  const deleteSlide = useCallback((slideId: string) => {
+    setPresentation((prev) => {
+      if (prev.slides.length <= 1) return prev; // keep at least 1
+      return {
+        ...prev,
+        slides: prev.slides.filter((s) => s.id !== slideId),
+        updatedAt: new Date().toISOString(),
+      };
+    });
+    setActiveSlideIndex((prev) => Math.max(0, prev - 1));
+    setIsDirty(true);
+  }, []);
+
   const saveLocal = useCallback(async () => {
     setIsSaving(true);
     try {
@@ -135,6 +159,8 @@ export function usePresentation(initial?: Presentation) {
     addElement,
     updateElement,
     removeElement,
+    addSlide,
+    deleteSlide,
     saveLocal,
     publish,
   };

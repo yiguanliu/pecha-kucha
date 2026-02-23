@@ -1,16 +1,20 @@
-import { Box, Typography, Stack, Tooltip } from '@mui/material';
+import { Box, Typography, Stack, Tooltip, IconButton, Button } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import type { Slide, TextElement, ImageElement } from '../../types/slide';
 
 interface Props {
   slides: Slide[];
   activeIndex: number;
   onSelectSlide: (index: number) => void;
+  onDeleteSlide?: (slideId: string) => void;
+  onAddSlide?: (afterIndex: number) => void;
 }
 
 // Thumbnail inner width ≈ 134px, full canvas = 900px
 const SCALE = 134 / 900;
 
-export default function SlidePanel({ slides, activeIndex, onSelectSlide }: Props) {
+export default function SlidePanel({ slides, activeIndex, onSelectSlide, onDeleteSlide, onAddSlide }: Props) {
   return (
     <Box
       sx={{
@@ -31,7 +35,8 @@ export default function SlidePanel({ slides, activeIndex, onSelectSlide }: Props
       </Typography>
       <Stack spacing={1.5}>
         {slides.map((slide, i) => (
-          <Tooltip key={slide.id} title={slide.title} placement="right">
+          <Box key={slide.id} sx={{ position: 'relative', '&:hover .slide-delete-btn': { opacity: 1 } }}>
+          <Tooltip title={slide.title} placement="right">
             <Box
               onClick={() => onSelectSlide(i)}
               sx={{
@@ -157,8 +162,39 @@ export default function SlidePanel({ slides, activeIndex, onSelectSlide }: Props
               </Box>
             </Box>
           </Tooltip>
+          {onDeleteSlide && slides.length > 1 && (
+            <IconButton
+              className="slide-delete-btn"
+              size="small"
+              onClick={(e) => { e.stopPropagation(); onDeleteSlide(slide.id); }}
+              sx={{
+                position: 'absolute',
+                top: 2,
+                right: 2,
+                opacity: 0,
+                transition: 'opacity 0.15s',
+                bgcolor: 'rgba(0,0,0,0.55)',
+                p: '2px',
+                '&:hover': { bgcolor: 'error.main' },
+              }}
+            >
+              <DeleteIcon sx={{ fontSize: 13, color: '#fff' }} />
+            </IconButton>
+          )}
+          </Box>
         ))}
       </Stack>
+
+      {onAddSlide && (
+        <Button
+          size="small"
+          startIcon={<AddIcon />}
+          onClick={() => onAddSlide(activeIndex)}
+          sx={{ mt: 1.5, width: '100%', fontSize: 11, justifyContent: 'flex-start', pl: 0.5 }}
+        >
+          Add slide
+        </Button>
+      )}
     </Box>
   );
 }

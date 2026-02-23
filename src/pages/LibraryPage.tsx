@@ -13,7 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router';
 import type { Presentation } from '../types/presentation';
-import { getPublishedPresentations } from '../services/presentationService';
+import { getPublishedPresentations, deletePresentation } from '../services/presentationService';
 import InspirationCard from '../components/library/InspirationCard';
 
 export default function LibraryPage() {
@@ -31,6 +31,15 @@ export default function LibraryPage() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deletePresentation(id);
+      setPresentations((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete');
+    }
+  };
 
   const filtered = presentations.filter(
     (p) =>
@@ -111,7 +120,7 @@ export default function LibraryPage() {
         <Grid container spacing={3}>
           {filtered.map((p) => (
             <Grid item xs={12} sm={6} md={4} key={p.id}>
-              <InspirationCard presentation={p} />
+              <InspirationCard presentation={p} onDelete={handleDelete} />
             </Grid>
           ))}
         </Grid>

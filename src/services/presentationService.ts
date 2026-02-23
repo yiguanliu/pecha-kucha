@@ -63,6 +63,14 @@ export async function upsertPresentation(p: Presentation): Promise<Presentation>
   return fromRow(data as PresentationRow);
 }
 
+export async function deletePresentation(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('presentations')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
 export async function uploadSlideImage(
   file: File,
   presentationId: string

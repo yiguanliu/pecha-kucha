@@ -226,6 +226,9 @@ export default function SlideCanvas({
         borderRadius: 1,
         overflow: 'hidden',
         cursor: canvasCursor,
+        // Contain element z-indices so they don't bleed into document root
+        // stacking context and cover portalled dialogs/modals
+        isolation: 'isolate',
       }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
