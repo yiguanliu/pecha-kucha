@@ -8,6 +8,7 @@ dist-ssr/
 # Environment variables (never commit real keys)
 .env.local
 .env.*.local
+.evn.example
 
 # Editor
 .vscode/
@@ -23,3 +24,9 @@ npm-debug.log*
 
 # TypeScript cache
 *.tsbuildinfo
+
+# claude
+.claude
+
+# supabase
+supabase.md
