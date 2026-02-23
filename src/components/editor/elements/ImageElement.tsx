@@ -5,10 +5,11 @@ interface Props {
   element: ImageElement;
   isSelected: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
+  onClick?: (e: React.MouseEvent) => void;
   style: CSSProperties;
 }
 
-export default function ImageElementComp({ element, onMouseDown, style, isSelected }: Props) {
+export default function ImageElementComp({ element, onMouseDown, onClick, style, isSelected }: Props) {
   return (
     <div
       style={{
@@ -19,6 +20,7 @@ export default function ImageElementComp({ element, onMouseDown, style, isSelect
         boxSizing: 'border-box',
       }}
       onMouseDown={onMouseDown}
+      onClick={onClick}
     >
       <img
         src={element.src}

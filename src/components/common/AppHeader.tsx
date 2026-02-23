@@ -2,10 +2,14 @@ import { AppBar, Toolbar, Typography, Button, Stack, IconButton, Tooltip } from 
 import { Link, useNavigate } from 'react-router';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import { signOut } from '../../services/authService';
+import { useThemeMode } from '../../context/ThemeContext';
 
 export default function AppHeader() {
   const navigate = useNavigate();
+  const { mode, toggleTheme } = useThemeMode();
 
   const handleSignOut = async () => {
     await signOut();
@@ -29,6 +33,11 @@ export default function AppHeader() {
           Pecha Kucha
         </Typography>
         <Stack direction="row" spacing={1} alignItems="center">
+          <Tooltip title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
+            <IconButton size="small" onClick={toggleTheme} sx={{ color: 'text.secondary' }}>
+              {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
+            </IconButton>
+          </Tooltip>
           <Button
             variant="contained"
             startIcon={<AddIcon />}

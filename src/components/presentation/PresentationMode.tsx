@@ -8,7 +8,10 @@ import {
   DialogActions,
   Typography,
   Stack,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import type { Presentation } from '../../types/presentation';
 import { useTimer } from '../../hooks/useTimer';
 import SlideTimer from './SlideTimer';
@@ -144,18 +147,24 @@ export default function PresentationMode({ presentation, onClose }: Props) {
         {currentIndex + 1} / {presentation.slides.length}
       </Typography>
 
-      {/* Escape hint (top left) */}
-      <Typography
-        sx={{
-          position: 'absolute',
-          top: 16,
-          left: 24,
-          color: 'rgba(255,255,255,0.2)',
-          fontSize: 11,
-        }}
-      >
-        {presentation.title}
-      </Typography>
+      {/* Exit button + title (top left) */}
+      <Box sx={{ position: 'absolute', top: 8, left: 8, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+        <Tooltip title="Exit presentation">
+          <IconButton
+            onClick={onClose}
+            size="small"
+            sx={{
+              color: 'rgba(255,255,255,0.4)',
+              '&:hover': { color: 'rgba(255,255,255,0.9)', bgcolor: 'rgba(255,255,255,0.12)' },
+            }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Typography sx={{ color: 'rgba(255,255,255,0.2)', fontSize: 11 }}>
+          {presentation.title}
+        </Typography>
+      </Box>
 
       {/* Timer bar at bottom */}
       <SlideTimer

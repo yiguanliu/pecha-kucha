@@ -1,11 +1,14 @@
 import { Box, Typography, Stack, Tooltip } from '@mui/material';
-import type { Slide } from '../../types/slide';
+import type { Slide, TextElement, ImageElement } from '../../types/slide';
 
 interface Props {
   slides: Slide[];
   activeIndex: number;
   onSelectSlide: (index: number) => void;
 }
+
+// Thumbnail inner width ≈ 134px, full canvas = 900px
+const SCALE = 134 / 900;
 
 export default function SlidePanel({ slides, activeIndex, onSelectSlide }: Props) {
   return (
@@ -47,7 +50,7 @@ export default function SlidePanel({ slides, activeIndex, onSelectSlide }: Props
                 },
               }}
             >
-              {/* Mini element previews */}
+              {/* Background image */}
               {slide.backgroundImage && (
                 <Box
                   component="img"
@@ -62,6 +65,70 @@ export default function SlidePanel({ slides, activeIndex, onSelectSlide }: Props
                   }}
                 />
               )}
+
+              {/* Scaled element previews */}
+              <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: 900,
+                    height: 506.25,
+                    transform: `scale(${SCALE})`,
+                    transformOrigin: 'top left',
+                  }}
+                >
+                  {slide.elements
+                    .slice()
+                    .sort((a, b) => a.zIndex - b.zIndex)
+                    .map((el) => {
+                      const baseStyle: React.CSSProperties = {
+                        position: 'absolute',
+                        left: `${el.x}%`,
+                        top: `${el.y}%`,
+                        width: `${el.width}%`,
+                        height: `${el.height}%`,
+                        overflow: 'hidden',
+                      };
+                      if (el.type === 'text') {
+                        const t = el as TextElement;
+                        return (
+                          <div key={el.id} style={{ ...baseStyle, padding: '4px 8px', boxSizing: 'border-box' }}>
+                            <p style={{
+                              margin: 0,
+                              fontSize: t.fontSize,
+                              fontWeight: t.fontWeight,
+                              color: t.color,
+                              textAlign: t.align,
+                              lineHeight: 1.3,
+                              wordBreak: 'break-word',
+                              fontFamily: 'Inter, Roboto, sans-serif',
+                            }}>
+                              {t.content}
+                            </p>
+                          </div>
+                        );
+                      }
+                      if (el.type === 'image') {
+                        const img = el as ImageElement;
+                        return (
+                          <div key={el.id} style={baseStyle}>
+                            <img
+                              src={img.src}
+                              alt={img.alt}
+                              style={{ width: '100%', height: '100%', objectFit: img.objectFit, display: 'block' }}
+                              draggable={false}
+                            />
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                </Box>
+              </Box>
+
+              {/* Title overlay at bottom */}
               <Box
                 sx={{
                   position: 'absolute',

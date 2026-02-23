@@ -6,10 +6,11 @@ interface Props {
   element: LinkElement;
   isSelected: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
+  onClick?: (e: React.MouseEvent) => void;
   style: CSSProperties;
 }
 
-export default function LinkElementComp({ element, onMouseDown, style, isSelected }: Props) {
+export default function LinkElementComp({ element, onMouseDown, onClick, style, isSelected }: Props) {
   return (
     <div
       style={{
@@ -25,6 +26,7 @@ export default function LinkElementComp({ element, onMouseDown, style, isSelecte
         overflow: 'hidden',
       }}
       onMouseDown={onMouseDown}
+      onClick={onClick}
     >
       <LinkIcon style={{ fontSize: 14, color: element.color, flexShrink: 0, pointerEvents: 'none' }} />
       <span

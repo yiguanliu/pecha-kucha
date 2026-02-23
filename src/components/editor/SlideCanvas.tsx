@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { Box } from '@mui/material';
 import type { Slide, SlideElement, TextElement, ImageElement, LinkElement } from '../../types/slide';
 import TextElementComp from './elements/TextElement';
@@ -29,6 +29,7 @@ export default function SlideCanvas({
     origX: number;
     origY: number;
   } | null>(null);
+  const [editingElementId, setEditingElementId] = useState<string | null>(null);
 
   const getCanvasSize = () => {
     const rect = canvasRef.current?.getBoundingClientRect();
@@ -69,6 +70,16 @@ export default function SlideCanvas({
 
   const handleMouseUp = () => {
     dragging.current = null;
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent, elementId: string) => {
+    if (readOnly) return;
+    e.stopPropagation();
+    setEditingElementId(elementId);
+  };
+
+  const handleStopEditing = () => {
+    setEditingElementId(null);
   };
 
   return (
@@ -124,6 +135,7 @@ export default function SlideCanvas({
               isSelected,
               onMouseDown: (e: React.MouseEvent) =>
                 handleMouseDown(e, el.id, el.x, el.y),
+              onClick: (e: React.MouseEvent) => e.stopPropagation(),
               style: commonStyle,
             };
 
@@ -133,6 +145,10 @@ export default function SlideCanvas({
                   key={el.id}
                   {...commonProps}
                   element={el as TextElement}
+                  isEditing={el.id === editingElementId}
+                  onDoubleClick={(e) => handleDoubleClick(e, el.id)}
+                  onContentChange={(content) => onUpdateElement(el.id, { content })}
+                  onStopEditing={handleStopEditing}
                 />
               );
             if (el.type === 'image')

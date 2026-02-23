@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Snackbar, Alert, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button, Stack } from '@mui/material';
 import { useParams, useLocation } from 'react-router';
 import type { Presentation } from '../types/presentation';
@@ -9,7 +9,7 @@ import SlideCanvas from '../components/editor/SlideCanvas';
 import PropertiesPanel from '../components/editor/PropertiesPanel';
 import { getPresentationById } from '../services/presentationService';
 import { loadFromFile } from '../services/markdownService';
-import type { SlideElement } from '../types/slide';
+import type { SlideElement, ImageElement } from '../types/slide';
 
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>();
@@ -74,6 +74,47 @@ export default function EditorPage() {
     editor.addElement(editor.activeSlide.id, el);
     setSelectedElementId(el.id);
   };
+
+  // Keep a stable ref so the paste listener doesn't go stale
+  const handleAddElementRef = useRef(handleAddElement);
+  handleAddElementRef.current = handleAddElement;
+  const activeSlideRef = useRef(editor.activeSlide);
+  activeSlideRef.current = editor.activeSlide;
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (!activeSlideRef.current) return;
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (!file) continue;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const src = ev.target?.result as string;
+            const el: ImageElement = {
+              id: crypto.randomUUID(),
+              type: 'image',
+              x: 10,
+              y: 10,
+              width: 60,
+              height: 50,
+              zIndex: Date.now(),
+              src,
+              alt: 'Pasted image',
+              objectFit: 'contain',
+            };
+            handleAddElementRef.current(el);
+          };
+          reader.readAsDataURL(file);
+          break;
+        }
+      }
+    };
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, []);
 
   const selectedElement =
     editor.activeSlide?.elements.find((el) => el.id === selectedElementId) ?? null;
