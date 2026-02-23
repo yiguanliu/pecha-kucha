@@ -19,18 +19,19 @@ export default function AppHeader() {
     <AppBar position="sticky" elevation={0}>
       <Toolbar>
         <Typography
-          variant="h6"
+          alignItems="center"
+          variant="h5"
           component={Link}
           to="/"
           sx={{
             flexGrow: 1,
             textDecoration: 'none',
             color: 'inherit',
-            fontWeight: 700,
+            fontWeight: 500,
             letterSpacing: '-0.02em',
           }}
         >
-          Pecha Kucha
+          Journey Pecha Kucha
         </Typography>
         <Stack direction="row" spacing={1} alignItems="center">
           <Tooltip title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>

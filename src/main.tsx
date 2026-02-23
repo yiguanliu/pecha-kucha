@@ -1,3 +1,9 @@
+// Polyfill Buffer for gray-matter (uses Buffer.from in browser)
+import { Buffer } from 'buffer';
+if (typeof globalThis.Buffer === 'undefined') {
+  (globalThis as unknown as Record<string, unknown>).Buffer = Buffer;
+}
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
